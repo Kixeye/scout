@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>scout-core</artifactId>
+	<name>Scout Core</name>
+	<description>
+        Provides common Discovery functionalities.
+    </description>
+
+	<parent>
+		<groupId>com.kixeye.scout</groupId>
+		<artifactId>scout-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<developers>
+		<developer>
+			<name>Elvir Bahtijaragic</name>
+			<email>ebahtijaragic@kixeye.com</email>
+			<organization>KIXEYE</organization>
+			<organizationUrl>http://www.kixeye.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>Chad Barry</name>
+			<email>cbarry@kixeye.com</email>
+			<organization>KIXEYE</organization>
+			<organizationUrl>http://www.kixeye.com</organizationUrl>
+		</developer>
+		<developer>
+			<name>David Turner</name>
+			<email>dturner@kixeye.com</email>
+			<organization>KIXEYE</organization>
+			<organizationUrl>http://www.kixeye.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
