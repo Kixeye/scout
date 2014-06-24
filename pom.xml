@@ -18,6 +18,7 @@
 	
 	<modules>
 		<module>scout-core</module>
+		<module>scout-eureka</module>
 	</modules>
 
 	<licenses>

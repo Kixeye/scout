@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>scout-core</artifactId>
-	<name>Scout Core</name>
+	<artifactId>scout-eureka</artifactId>
+	<name>Scout Eureka</name>
 	<description>
-        Provides common Discovery functionalities.
+        Provides Discovery functionality using Eureka.
     </description>
 
 	<parent>
@@ -34,7 +34,33 @@
 		</developer>
 	</developers>
 
+	<properties>
+		<relax.version>1.0.0-SNAPSHOT</relax.version>
+		<jdom.version>2.0.5</jdom.version>
+	</properties>
+
 	<dependencies>
+		<!-- Scout -->
+		<dependency>
+			<groupId>${parent.groupId}</groupId>
+			<artifactId>scout-core</artifactId>
+			<version>${parent.version}</version>
+		</dependency>
+
+		<!-- JDOM2 -->
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom2</artifactId>
+			<version>${jdom.version}</version>
+		</dependency>
+
+		<!-- Relax -->
+		<dependency>
+			<groupId>com.kixeye.relax</groupId>
+			<artifactId>relax</artifactId>
+			<version>${relax.version}</version>
+		</dependency>
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -59,6 +85,12 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.simpleframework</groupId>
+			<artifactId>simple</artifactId>
+			<version>5.1.6</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

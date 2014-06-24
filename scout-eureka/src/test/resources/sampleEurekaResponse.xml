@@ -1,0 +1,95 @@
+<applications>
+	<versions__delta>1</versions__delta>
+	<apps__hashcode>UP_4_</apps__hashcode>
+	<application>
+		<name>EUREKA</name>
+		<instance>
+			<hostName>eureka.eureka1.priv</hostName>
+			<app>EUREKA</app>
+			<ipAddr>127.0.1.1</ipAddr>
+			<status>UP</status>
+			<overriddenstatus>UNKNOWN</overriddenstatus>
+			<port enabled="true">80</port>
+			<securePort enabled="false">443</securePort>
+			<countryId>1</countryId>
+			<dataCenterInfo class="com.netflix.appinfo.AmazonInfo">
+				<name>Amazon</name>
+				<metadata>
+					<availability-zone>us-west-2b</availability-zone>
+					<public-ipv4>192.168.1.1</public-ipv4>
+					<instance-id>i-11111111</instance-id>
+					<public-hostname>eureka.eureka1.pub.com</public-hostname>
+					<local-ipv4>127.0.1.1</local-ipv4>
+					<ami-id>ami-11111111</ami-id>
+					<instance-type>m3.large</instance-type>
+				</metadata>
+			</dataCenterInfo>
+			<leaseInfo>
+				<renewalIntervalInSecs>30</renewalIntervalInSecs>
+				<durationInSecs>90</durationInSecs>
+				<registrationTimestamp>1399577453415</registrationTimestamp>
+				<lastRenewalTimestamp>1403647720050</lastRenewalTimestamp>
+				<evictionTimestamp>0</evictionTimestamp>
+				<serviceUpTimestamp>1399577453415</serviceUpTimestamp>
+			</leaseInfo>
+			<metadata class="java.util.Collections$EmptyMap" />
+			<homePageUrl>http://eureka.eureka1.pub.com:80/</homePageUrl>
+			<statusPageUrl>http://eureka.eureka1.pub.com:80/Status
+			</statusPageUrl>
+			<healthCheckUrl>http://eureka.eureka1.pub.com:80/healthcheck
+			</healthCheckUrl>
+			<vipAddress>eureka.eureka1.pub.com:80</vipAddress>
+			<isCoordinatingDiscoveryServer>true</isCoordinatingDiscoveryServer>
+			<lastUpdatedTimestamp>1399577453415</lastUpdatedTimestamp>
+			<lastDirtyTimestamp>1399577433108</lastDirtyTimestamp>
+			<actionType>ADDED</actionType>
+		</instance>
+	</application>
+	<application>
+		<name>DEMO</name>
+		<instance>
+			<hostName>demo.demo1.priv</hostName>
+			<app>DEMO</app>
+			<ipAddr>127.0.1.2</ipAddr>
+			<status>UP</status>
+			<overriddenstatus>UNKNOWN</overriddenstatus>
+			<port enabled="true">80</port>
+			<securePort enabled="false">443</securePort>
+			<countryId>1</countryId>
+			<dataCenterInfo class="com.netflix.appinfo.AmazonInfo">
+				<name>Amazon</name>
+				<metadata>
+					<availability-zone>us-west-2b</availability-zone>
+					<public-ipv4>192.168.1.2</public-ipv4>
+					<instance-id>i-22222222</instance-id>
+					<public-hostname>demo.demo1.pub.com</public-hostname>
+					<local-ipv4>127.0.1.2</local-ipv4>
+					<ami-id>ami-22222222</ami-id>
+					<instance-type>m3.large</instance-type>
+				</metadata>
+			</dataCenterInfo>
+			<leaseInfo>
+				<renewalIntervalInSecs>30</renewalIntervalInSecs>
+				<durationInSecs>90</durationInSecs>
+				<registrationTimestamp>1399577453415</registrationTimestamp>
+				<lastRenewalTimestamp>1403647720050</lastRenewalTimestamp>
+				<evictionTimestamp>0</evictionTimestamp>
+				<serviceUpTimestamp>1399577453415</serviceUpTimestamp>
+			</leaseInfo>
+			<metadata>
+				<sessions>462507</sessions>
+				<connections>472887</connections>
+			</metadata>
+			<homePageUrl>http://demo.demo1.pub.com:80/</homePageUrl>
+			<statusPageUrl>http://demo.demo1.pub.com:80/Status
+			</statusPageUrl>
+			<healthCheckUrl>http://demo.demo1.pub.com:80/healthcheck
+			</healthCheckUrl>
+			<vipAddress>demo.demo1.pub.com:80</vipAddress>
+			<isCoordinatingDiscoveryServer>true</isCoordinatingDiscoveryServer>
+			<lastUpdatedTimestamp>1399577453415</lastUpdatedTimestamp>
+			<lastDirtyTimestamp>1399577433108</lastDirtyTimestamp>
+			<actionType>ADDED</actionType>
+		</instance>
+	</application>
+</applications>
