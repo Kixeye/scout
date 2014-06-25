@@ -28,5 +28,7 @@ package com.kixeye.scout;
 public enum ServiceStatus {
 	UP,
 	DOWN,
+	STARTING,
+	OUT_OF_SERVICE,
 	UNKNOWN
 }
