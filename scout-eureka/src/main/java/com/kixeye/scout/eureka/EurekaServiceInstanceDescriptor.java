@@ -48,7 +48,7 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 	private final Map<String, String> metadata = new HashMap<>();
 	
 	/**
-	 * Creates a descriptor from raw XML.
+	 * Creates a descriptor from a parent and a raw element.
 	 * 
 	 * @param name
 	 * @param instanceElement

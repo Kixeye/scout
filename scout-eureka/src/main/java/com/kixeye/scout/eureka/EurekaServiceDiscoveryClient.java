@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.http.client.config.RequestConfig;
@@ -47,12 +49,14 @@ import com.kixeye.relax.SerializedObject;
 import com.kixeye.scout.ServiceDiscoveryClient;
 
 /**
- * Describes services in a Eureka instance.
+ * Discovers services listed on a Eureka service.
  * 
  * @author ebahtijaragic
  */
 public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<EurekaServiceInstanceDescriptor>, Closeable {
 	private static final Logger logger = LoggerFactory.getLogger(EurekaServiceDiscoveryClient.class);
+	
+	private final ScheduledExecutorService scheduledExecutor;
 	
 	private final RestClient restClient;
 	
@@ -60,13 +64,28 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	
 	private final AtomicReference<EurekaApplications> applicationsRef = new AtomicReference<>(null);
 	
+	private volatile long lastRefreshTime = -1;
+	
+	/**
+	 * Creates a discovery client with default scheduler.
+	 * 
+	 * @param eurekaServiceUrl the url of the eureka instance, i.e. http://host:port/eureka/v2
+	 * @param refreshRate
+	 * @param refreshRateTimeUnit
+	 */
+	public EurekaServiceDiscoveryClient(String eurekaServiceUrl, long refreshRate, TimeUnit refreshRateTimeUnit) {
+		this(eurekaServiceUrl, refreshRate, refreshRateTimeUnit, Executors.newScheduledThreadPool(1));
+	}
+	
 	/**
 	 * Creates a discovery client.
 	 * 
 	 * @param eurekaServiceUrl the url of the eureka instance, i.e. http://host:port/eureka/v2
-	 * @param refreshTimeInMilliseconds
+	 * @param refreshRate
+	 * @param refreshRateTimeUnit
+	 * @param scheduledExecutor
 	 */
-	public EurekaServiceDiscoveryClient(String eurekaServiceUrl, long refreshTimeInMilliseconds) {
+	public EurekaServiceDiscoveryClient(String eurekaServiceUrl, long refreshRate, TimeUnit refreshRateTimeUnit, ScheduledExecutorService scheduledExecutor) {
 		while (eurekaServiceUrl.endsWith("/")) {
 			eurekaServiceUrl = eurekaServiceUrl.substring(0, eurekaServiceUrl.length() - 1);
 		}
@@ -76,7 +95,8 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 					.withRequestConfig(RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build())
 				.build();
 		
-		this.refreshTimer.scheduleAtFixedRate(refreshTask, 0, refreshTimeInMilliseconds);
+		this.scheduledExecutor = scheduledExecutor;
+		this.scheduledExecutor.scheduleAtFixedRate(refreshTask, 0, refreshRate, refreshRateTimeUnit);
 	}
 	
 	/**
@@ -129,18 +149,18 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	}
 	
 	/**
-	 * Returns true if we have any application.
+	 * Returns true if we received a response.
 	 * 
 	 * @return
 	 */
-	public boolean hasApplications() {
-		return applicationsRef.get() != null;
+	public long getLastRefreshTime() {
+		return lastRefreshTime;
 	}
 	
 	/**
 	 * Pings the discovery service.
 	 */
-	private final TimerTask refreshTask = new TimerTask() {
+	private final Runnable refreshTask = new Runnable() {
 		public void run() {
 			try {
 				restClient.get("/apps", Element.class).addListener(serviceResponseListener);
@@ -157,6 +177,7 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 		public void handle(HttpPromise<SerializedObject<Element>> promise) {
 			try {
 				applicationsRef.set(new EurekaApplications(promise.get().deserialize()));
+				lastRefreshTime = System.currentTimeMillis();
 			} catch (Exception e) {
 				logger.error("Unable to parse the EurekaService response", e);
 			}
@@ -164,7 +185,7 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	};
 	
 	/**
-	 * A JSON Rest SerDe.
+	 * A XML Rest SerDe.
 	 */
 	private static final RestClientSerDe serDe = new RestClientSerDe() {
 		/**

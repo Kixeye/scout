@@ -35,7 +35,7 @@ public class EurekaApplications {
 	private final List<EurekaApplication> applications = new ArrayList<>();
 
 	/**
-	 * Creates a top level application object.
+	 * Creates a top level applications object.
 	 * 
 	 * @param element
 	 */

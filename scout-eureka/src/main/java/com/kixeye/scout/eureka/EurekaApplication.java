@@ -36,6 +36,12 @@ public class EurekaApplication {
 	private final String name;
 	private final List<EurekaServiceInstanceDescriptor> instances = new ArrayList<>();
 
+	/**
+	 * Creates a new application with a parent and raw element.
+	 * 
+	 * @param parent
+	 * @param element
+	 */
 	protected EurekaApplication(EurekaApplications parent, Element element) {
 		this.parent = parent;
 		this.name = element.getChildText("name");

@@ -28,6 +28,7 @@ import java.net.ServerSocket;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -107,9 +108,9 @@ private static final Logger logger = LoggerFactory.getLogger(EurekaServiceDiscov
 	
 	@Test
 	public void testGetAllApps() throws Exception {
-		try (EurekaServiceDiscoveryClient client = new EurekaServiceDiscoveryClient("http://localhost:" + port + "/eureka/v2", 5000)) {
+		try (EurekaServiceDiscoveryClient client = new EurekaServiceDiscoveryClient("http://localhost:" + port + "/eureka/v2", 5, TimeUnit.SECONDS)) {
 			int count = 0;
-			while (!client.hasApplications() && count < 20) {
+			while (client.getLastRefreshTime() < 1 && count < 20) {
 				Thread.sleep(100);
 				count++;
 			}
@@ -155,9 +156,9 @@ private static final Logger logger = LoggerFactory.getLogger(EurekaServiceDiscov
 	
 	@Test
 	public void testGetSingleApp() throws Exception {
-		try (EurekaServiceDiscoveryClient client = new EurekaServiceDiscoveryClient("http://localhost:" + port + "/eureka/v2", 5000)) {
+		try (EurekaServiceDiscoveryClient client = new EurekaServiceDiscoveryClient("http://localhost:" + port + "/eureka/v2", 5, TimeUnit.SECONDS)) {
 			int count = 0;
-			while (!client.hasApplications() && count < 20) {
+			while (client.getLastRefreshTime() < 1 && count < 20) {
 				Thread.sleep(100);
 				count++;
 			}
