@@ -42,10 +42,10 @@ import org.slf4j.LoggerFactory;
 
 import com.kixeye.relax.HttpPromise;
 import com.kixeye.relax.HttpPromise.HttpPromiseListener;
+import com.kixeye.relax.HttpResponse;
 import com.kixeye.relax.RestClient;
 import com.kixeye.relax.RestClientSerDe;
 import com.kixeye.relax.RestClients;
-import com.kixeye.relax.SerializedObject;
 import com.kixeye.scout.ServiceDiscoveryClient;
 
 /**
@@ -173,10 +173,10 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	/**
 	 * Handles the discovery service response.
 	 */
-	private final HttpPromiseListener<SerializedObject<Element>> serviceResponseListener = new HttpPromiseListener<SerializedObject<Element>>() {
-		public void handle(HttpPromise<SerializedObject<Element>> promise) {
+	private final HttpPromiseListener<HttpResponse<Element>> serviceResponseListener = new HttpPromiseListener<HttpResponse<Element>>() {
+		public void handle(HttpPromise<HttpResponse<Element>> promise) {
 			try {
-				applicationsRef.set(new EurekaApplications(promise.get().deserialize()));
+				applicationsRef.set(new EurekaApplications(promise.get().getBody().deserialize()));
 				lastRefreshTime = System.currentTimeMillis();
 			} catch (Exception e) {
 				logger.error("Unable to parse the EurekaService response", e);
