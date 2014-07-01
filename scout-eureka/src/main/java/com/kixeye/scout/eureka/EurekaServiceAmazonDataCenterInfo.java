@@ -20,6 +20,9 @@ package com.kixeye.scout.eureka;
  * #L%
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jdom2.Element;
 
 /**
@@ -32,13 +35,8 @@ public class EurekaServiceAmazonDataCenterInfo implements EuerkaServiceDataCente
 
 	private final EurekaServiceInstanceDescriptor parent;
 
-	private final String availabilityZone;
-	private final String publicIpv4;
-	private final String instanceId;
-	private final String publicHostname;
-	private final String localIpv4;
-	private final String amiId;
-	private final String instanceType;
+	private final String name;
+	private final Map<String, String> metadata = new HashMap<>();
 
 	/**
 	 * Creates a descriptor from a parent and a raw element.
@@ -46,17 +44,16 @@ public class EurekaServiceAmazonDataCenterInfo implements EuerkaServiceDataCente
 	 * @param parent
 	 * @param instanceElement
 	 */
-	protected EurekaServiceAmazonDataCenterInfo(
-			EurekaServiceInstanceDescriptor parent, Element instanceElement) {
+	protected EurekaServiceAmazonDataCenterInfo(EurekaServiceInstanceDescriptor parent, Element instanceElement) {
 		this.parent = parent;
+		this.name = instanceElement.getChildText("name");
+		Element metadata = instanceElement.getChild("metadata");
 
-		this.availabilityZone = instanceElement.getChildText("availability-zone");
-		this.publicIpv4 = instanceElement.getChildText("public-ipv4");
-		this.instanceId = instanceElement.getChildText("instance-id");
-		this.publicHostname = instanceElement.getChildText("public-hostname");
-		this.localIpv4 = instanceElement.getChildText("local-ipv4");
-		this.amiId = instanceElement.getChildText("ami-id");
-		this.instanceType = instanceElement.getChildText("instance-type");
+		if (metadata != null) {
+			for (Element element : metadata.getChildren()) {
+				this.metadata.put(element.getName(), element.getText());
+			}
+		}
 	}
 
 	/**
@@ -67,51 +64,16 @@ public class EurekaServiceAmazonDataCenterInfo implements EuerkaServiceDataCente
 	}
 
 	/**
-	 * @return the availabilityZone
+	 * @return the name
 	 */
-	public String getAvailabilityZone() {
-		return availabilityZone;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * @return the publicIpv4
+	 * @return the metadata
 	 */
-	public String getPublicIpv4() {
-		return publicIpv4;
-	}
-
-	/**
-	 * @return the instanceId
-	 */
-	public String getInstanceId() {
-		return instanceId;
-	}
-
-	/**
-	 * @return the publicHostname
-	 */
-	public String getPublicHostname() {
-		return publicHostname;
-	}
-
-	/**
-	 * @return the localIpv4
-	 */
-	public String getLocalIpv4() {
-		return localIpv4;
-	}
-
-	/**
-	 * @return the amiId
-	 */
-	public String getAmiId() {
-		return amiId;
-	}
-
-	/**
-	 * @return the instanceType
-	 */
-	public String getInstanceType() {
-		return instanceType;
+	public Map<String, String> getMetadata() {
+		return metadata;
 	}
 }
