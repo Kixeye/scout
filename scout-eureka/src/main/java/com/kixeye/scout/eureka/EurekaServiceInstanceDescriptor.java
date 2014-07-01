@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jdom2.Attribute;
 import org.jdom2.Element;
 
 import com.kixeye.scout.ServiceInstanceDescriptor;
@@ -34,8 +35,7 @@ import com.kixeye.scout.ServiceStatus;
  * 
  * @author ebahtijaragic
  */
-public class EurekaServiceInstanceDescriptor implements
-		ServiceInstanceDescriptor {
+public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescriptor {
 	private final EurekaApplication parent;
 
 	private final String app;
@@ -50,15 +50,15 @@ public class EurekaServiceInstanceDescriptor implements
 	private final Map<String, String> metadata = new HashMap<>();
 	private final int lastUpdatedTimestamp;
 	private final int lastDirtyTimestamp;
+	private final EuerkaServiceDataCenterInfo dataCenterInfo;
 
 	/**
 	 * Creates a descriptor from a parent and a raw element.
 	 * 
-	 * @param name
+	 * @param parent
 	 * @param instanceElement
 	 */
-	protected EurekaServiceInstanceDescriptor(EurekaApplication parent,
-			Element instanceElement) {
+	protected EurekaServiceInstanceDescriptor(EurekaApplication parent, Element instanceElement) {
 		this.parent = parent;
 
 		this.app = instanceElement.getChildText("app");
@@ -146,6 +146,26 @@ public class EurekaServiceInstanceDescriptor implements
 				this.metadata.put(element.getName(), element.getText());
 			}
 		}
+		
+		Element dataCenterInfo = instanceElement.getChild("dataCenterInfo");
+		
+		if (dataCenterInfo != null) {
+			Attribute dataCenterInfoClass = instanceElement.getAttribute("class");
+			
+			if (dataCenterInfoClass != null && dataCenterInfoClass.getValue() != null) {
+				switch (dataCenterInfoClass.getValue()) {
+					case EurekaServiceAmazonDataCenterInfo.DATA_CENTER_INFO_CLASS:
+						this.dataCenterInfo = new EurekaServiceAmazonDataCenterInfo(this, dataCenterInfo);
+						break;
+					default:
+						this.dataCenterInfo = null;
+				}
+			} else {
+				this.dataCenterInfo = null;
+			}
+		} else {
+			this.dataCenterInfo = null;
+		}
 	}
 
 	/**
@@ -223,6 +243,13 @@ public class EurekaServiceInstanceDescriptor implements
 	 */
 	public ServiceStatus getOverridenStatus() {
 		return overridenStatus;
+	}
+	
+	/**
+	 * @return the dataCenterInfo
+	 */
+	public EuerkaServiceDataCenterInfo getDataCenterInfo() {
+		return dataCenterInfo;
 	}
 
 	/**
