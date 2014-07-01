@@ -56,6 +56,8 @@ import com.kixeye.scout.ServiceDiscoveryClient;
 public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<EurekaServiceInstanceDescriptor>, Closeable {
 	private static final Logger logger = LoggerFactory.getLogger(EurekaServiceDiscoveryClient.class);
 	
+	private static final String ACCEPT_TYPE = "application/xml";
+	
 	private final ScheduledExecutorService scheduledExecutor;
 	
 	private final RestClient restClient;
@@ -163,7 +165,7 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	private final Runnable refreshTask = new Runnable() {
 		public void run() {
 			try {
-				restClient.get("/apps", Element.class).addListener(serviceResponseListener);
+				restClient.get("/apps", ACCEPT_TYPE, Element.class).addListener(serviceResponseListener);
 			} catch (Exception e) {
 				logger.error("Unable to retrieve apps from EurekaService", e);
 			}
