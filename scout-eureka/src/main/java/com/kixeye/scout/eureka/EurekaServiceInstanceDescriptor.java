@@ -34,9 +34,10 @@ import com.kixeye.scout.ServiceStatus;
  * 
  * @author ebahtijaragic
  */
-public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescriptor {
+public class EurekaServiceInstanceDescriptor implements
+		ServiceInstanceDescriptor {
 	private final EurekaApplication parent;
-	
+
 	private final String app;
 	private final String ipAddress;
 	private final String hostname;
@@ -47,22 +48,43 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 	private final ServiceStatus status;
 	private final ServiceStatus overridenStatus;
 	private final Map<String, String> metadata = new HashMap<>();
-	
+	private final int lastUpdatedTimestamp;
+	private final int lastDirtyTimestamp;
+
 	/**
 	 * Creates a descriptor from a parent and a raw element.
 	 * 
 	 * @param name
 	 * @param instanceElement
 	 */
-	protected EurekaServiceInstanceDescriptor(EurekaApplication parent, Element instanceElement) {
+	protected EurekaServiceInstanceDescriptor(EurekaApplication parent,
+			Element instanceElement) {
 		this.parent = parent;
-		
+
 		this.app = instanceElement.getChildText("app");
 		this.ipAddress = instanceElement.getChildText("ipAddr");
 		this.hostname = instanceElement.getChildText("hostName");
-		
+
+		int lastUpdatedTimestampRaw;
+		try {
+			lastUpdatedTimestampRaw = Integer.parseInt(instanceElement.getChildText("lastUpdatedTimestamp"));
+		} catch (Exception e) {
+			lastUpdatedTimestampRaw = -11;
+		}
+
+		this.lastUpdatedTimestamp = lastUpdatedTimestampRaw;
+
+		int lastDirtyTimestampRaw;
+		try {
+			lastDirtyTimestampRaw = Integer.parseInt(instanceElement.getChildText("lastDirtyTimestamp"));
+		} catch (Exception e) {
+			lastDirtyTimestampRaw = -11;
+		}
+
+		this.lastDirtyTimestamp = lastDirtyTimestampRaw;
+
 		Element port = instanceElement.getChild("port");
-		
+
 		if (port != null) {
 			this.isPortEnabled = Boolean.valueOf(port.getAttributeValue("enabled", "true"));
 			this.port = Integer.valueOf(port.getTextTrim());
@@ -70,9 +92,9 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 			this.isPortEnabled = false;
 			this.port = -1;
 		}
-		
+
 		Element securePort = instanceElement.getChild("securePort");
-		
+
 		if (securePort != null) {
 			this.isSecurePortEnabled = Boolean.valueOf(securePort.getAttributeValue("enabled", "true"));
 			this.securePort = Integer.valueOf(securePort.getTextTrim());
@@ -80,45 +102,45 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 			this.isSecurePortEnabled = false;
 			this.securePort = -1;
 		}
-		
+
 		Element statusElement = instanceElement.getChild("status");
 		ServiceStatus status = null;
 
 		if (statusElement != null) {
 			switch (statusElement.getTextTrim()) {
-				case "UP":
-					status = ServiceStatus.UP;
-					break;
-				case "DOWN":
-					status = ServiceStatus.DOWN;
-					break;
-				default:
-					status = ServiceStatus.UNKNOWN;
+			case "UP":
+				status = ServiceStatus.UP;
+				break;
+			case "DOWN":
+				status = ServiceStatus.DOWN;
+				break;
+			default:
+				status = ServiceStatus.UNKNOWN;
 			}
 		}
-		
+
 		this.status = status;
 
 		Element overridenStatusElement = instanceElement.getChild("overriddenstatus");
 		ServiceStatus overridenStatus = null;
-		
+
 		if (overridenStatusElement != null) {
 			switch (overridenStatusElement.getTextTrim()) {
-				case "UP":
-					overridenStatus = ServiceStatus.UP;
-					break;
-				case "DOWN":
-					overridenStatus = ServiceStatus.DOWN;
-					break;
-				default:
-					overridenStatus = ServiceStatus.UNKNOWN;
+			case "UP":
+				overridenStatus = ServiceStatus.UP;
+				break;
+			case "DOWN":
+				overridenStatus = ServiceStatus.DOWN;
+				break;
+			default:
+				overridenStatus = ServiceStatus.UNKNOWN;
 			}
 		}
-		
+
 		this.overridenStatus = overridenStatus;
-		
+
 		Element metadata = instanceElement.getChild("metadata");
-		
+
 		if (metadata != null) {
 			for (Element element : metadata.getChildren()) {
 				this.metadata.put(element.getName(), element.getText());
@@ -153,14 +175,14 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 	public String getApp() {
 		return app;
 	}
-	
+
 	/**
 	 * @return the ipAddress
 	 */
 	public String getIpAddress() {
 		return ipAddress;
 	}
-	
+
 	/**
 	 * @return the hostname
 	 */
@@ -201,6 +223,20 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 	 */
 	public ServiceStatus getOverridenStatus() {
 		return overridenStatus;
+	}
+
+	/**
+	 * @return the lastUpdatedTimestamp
+	 */
+	public int getLastUpdatedTimestamp() {
+		return lastUpdatedTimestamp;
+	}
+
+	/**
+	 * @return the lastDirtyTimestamp
+	 */
+	public int getLastDirtyTimestamp() {
+		return lastDirtyTimestamp;
 	}
 
 	/**
