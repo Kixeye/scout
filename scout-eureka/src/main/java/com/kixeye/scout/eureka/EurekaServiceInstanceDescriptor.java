@@ -41,6 +41,7 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 	private final String app;
 	private final String ipAddress;
 	private final String hostname;
+	private final String vipAddress;
 	private final boolean isPortEnabled;
 	private final int port;
 	private final boolean isSecurePortEnabled;
@@ -64,6 +65,7 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 		this.app = instanceElement.getChildText("app");
 		this.ipAddress = instanceElement.getChildText("ipAddr");
 		this.hostname = instanceElement.getChildText("hostName");
+		this.vipAddress = instanceElement.getChildText("vipAddress");
 
 		int lastUpdatedTimestampRaw;
 		try {
@@ -208,6 +210,13 @@ public class EurekaServiceInstanceDescriptor implements ServiceInstanceDescripto
 	 */
 	public String getHostname() {
 		return hostname;
+	}
+	
+	/**
+	 * @return the vipAddress
+	 */
+	public String getVipAddress() {
+		return vipAddress;
 	}
 
 	/**
