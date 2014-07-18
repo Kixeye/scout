@@ -31,12 +31,13 @@ Example for Maven:
     <version>x.y.z</version>
 </dependency>
 ```
-```
+
 and for Ivy:
 
 ```xml
 <dependency org="com.kixeye.scout" name="scout-eureka" rev="x.y.z" />
 ```
+
 and for Gradle:
 
 ```groovy
