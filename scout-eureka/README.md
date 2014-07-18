@@ -1,15 +1,45 @@
-Scout
+Scout Eureka
 =====
-[![Build Status](https://travis-ci.org/Kixeye/scout.svg?branch=master)](https://travis-ci.org/Kixeye/scout)
-
-A discovery client that can access multiple discovery services.
+A discovery client that can access service information from Eureka services.
 
 Getting Started
 ==========
 
-Scout has multiple discovery services it supports. A good starting point is to look at the [EurekaServiceDiscoveryClient].
+[EurekaServiceDiscoveryClient] is the primary class for this library.
 
-See [Scout Eureka](https://github.com/KIXEYE/scout/scout-eureka)
+Example
+==========
+
+```java
+try (EurekaServiceDiscoveryClient client = new EurekaServiceDiscoveryClient(eurekaUrl, 5, TimeUnit.SECONDS)) {
+	List<EurekaServiceInstanceDescriptor> descriptors = client.describeAll();
+	
+	// do something with the descriptors
+}
+```
+
+## Binaries
+
+Example for Maven:
+
+```xml
+<dependency>
+    <groupId>com.kixeye.scout</groupId>
+    <artifactId>scout-eureka</artifactId>
+    <version>x.y.z</version>
+</dependency>
+```
+```
+and for Ivy:
+
+```xml
+<dependency org="com.kixeye.scout" name="scout-eureka" rev="x.y.z" />
+```
+and for Gradle:
+
+```groovy
+compile 'com.kixeye.scout:scout-eureka:x.y.z'
+```
 
 ## Build
 
