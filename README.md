@@ -7,7 +7,7 @@ A discovery client that can access multiple discovery services.
 Getting Started
 ==========
 
-Scout has multiple discovery services it supports. A good starting point is to look at the [EurekaServiceDiscoveryClient].
+Scout has multiple discovery services it supports. A good starting point is to look at the [EurekaServiceDiscoveryClient](https://github.com/Kixeye/scout/blob/master/scout-eureka/src/main/java/com/kixeye/scout/eureka/EurekaServiceDiscoveryClient.java).
 
 See [Scout Eureka](https://github.com/KIXEYE/scout/tree/master/scout-eureka)
 

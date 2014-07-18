@@ -7,7 +7,7 @@ A discovery client that can access service information from Eureka services.
 Getting Started
 ==========
 
-[EurekaServiceDiscoveryClient] is the primary class for this library.
+[EurekaServiceDiscoveryClient](https://github.com/Kixeye/scout/blob/master/scout-eureka/src/main/java/com/kixeye/scout/eureka/EurekaServiceDiscoveryClient.java) is the primary class for this library.
 
 Example
 ==========
