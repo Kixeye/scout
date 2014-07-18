@@ -1,5 +1,7 @@
 Scout Eureka
 =====
+[![Build Status](https://travis-ci.org/Kixeye/scout.svg?branch=master)](https://travis-ci.org/Kixeye/scout)
+
 A discovery client that can access service information from Eureka services.
 
 Getting Started

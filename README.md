@@ -9,7 +9,7 @@ Getting Started
 
 Scout has multiple discovery services it supports. A good starting point is to look at the [EurekaServiceDiscoveryClient].
 
-See [Scout Eureka](https://github.com/KIXEYE/scout/scout-eureka)
+See [Scout Eureka](https://github.com/KIXEYE/scout/tree/master/scout-eureka)
 
 ## Build
 
