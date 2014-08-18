@@ -128,7 +128,7 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 		
 		if (applications != null) {
 			for (EurekaApplication application : applications.getApplications()) {
-				if (application.getName().equals(serviceName)) {
+				if (application.getName().equalsIgnoreCase(serviceName)) {
 					return application.getInstances();
 				}
 			}
