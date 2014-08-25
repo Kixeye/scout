@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.NoConnectionReuseStrategy;
+import org.apache.http.message.BasicHeader;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -94,7 +96,9 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 		
 		this.restClient = RestClients.create(eurekaServiceUrl, serDe)
 					.withUserAgentName(EurekaServiceDiscoveryClient.class.getSimpleName())
-					.withRequestConfig(RequestConfig.custom().setSocketTimeout(10000).setConnectTimeout(10000).build())
+					.withRequestConfig(RequestConfig.custom().setStaleConnectionCheckEnabled(true).setSocketTimeout(10000).setConnectTimeout(10000).build())
+					.withConnectionReuseStrategy(NoConnectionReuseStrategy.INSTANCE)
+					.withDefaultHeaders(new BasicHeader("Connection", "Close"))
 				.build();
 		
 		this.scheduledExecutor = scheduledExecutor;

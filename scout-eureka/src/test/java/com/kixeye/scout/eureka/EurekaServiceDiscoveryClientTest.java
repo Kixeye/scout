@@ -60,6 +60,8 @@ private static final Logger logger = LoggerFactory.getLogger(EurekaServiceDiscov
 	private Container testContainer = new Container() {
 		@Override
 		public void handle(Request request, Response response) {
+			logger.info("Got request: " + request);
+			
 			if ("/eureka/v2/apps".equals(request.getTarget())) {
 				try {
 					try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("sampleEurekaResponse.xml")) {
