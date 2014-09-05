@@ -26,9 +26,9 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -64,7 +64,7 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	
 	private final RestClient restClient;
 	
-	private final Timer refreshTimer = new Timer("discoveryClientRefreshTimer", true);
+	private final ScheduledFuture<?> timedRedresh;
 	
 	private final AtomicReference<EurekaApplications> applicationsRef = new AtomicReference<>(null);
 	
@@ -90,19 +90,34 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	 * @param scheduledExecutor
 	 */
 	public EurekaServiceDiscoveryClient(String eurekaServiceUrl, long refreshRate, TimeUnit refreshRateTimeUnit, ScheduledExecutorService scheduledExecutor) {
+		this(eurekaServiceUrl, refreshRate, refreshRateTimeUnit, scheduledExecutor, 10000, 10000, 10000);
+	}
+	
+	/**
+	 * Creates a discovery client.
+	 * 
+	 * @param eurekaServiceUrl the url of the eureka instance, i.e. http://host:port/eureka/v2
+	 * @param refreshRate
+	 * @param refreshRateTimeUnit
+	 * @param scheduledExecutor
+	 * @param socketTimeout
+	 * @param connectionTimeout
+	 * @param connectTimeout
+	 */
+	public EurekaServiceDiscoveryClient(String eurekaServiceUrl, long refreshRate, TimeUnit refreshRateTimeUnit, ScheduledExecutorService scheduledExecutor, int socketTimeout, int connectionTimeout, int connectTimeout) {
 		while (eurekaServiceUrl.endsWith("/")) {
 			eurekaServiceUrl = eurekaServiceUrl.substring(0, eurekaServiceUrl.length() - 1);
 		}
 		
 		this.restClient = RestClients.create(eurekaServiceUrl, serDe)
 					.withUserAgentName(EurekaServiceDiscoveryClient.class.getSimpleName())
-					.withRequestConfig(RequestConfig.custom().setStaleConnectionCheckEnabled(true).setSocketTimeout(10000).setConnectTimeout(10000).build())
+					.withRequestConfig(RequestConfig.custom().setStaleConnectionCheckEnabled(true).setSocketTimeout(socketTimeout).setConnectTimeout(connectTimeout).setConnectionRequestTimeout(connectionTimeout).build())
 					.withConnectionReuseStrategy(NoConnectionReuseStrategy.INSTANCE)
 					.withDefaultHeaders(new BasicHeader("Connection", "Close"))
 				.build();
 		
 		this.scheduledExecutor = scheduledExecutor;
-		this.scheduledExecutor.scheduleAtFixedRate(refreshTask, 0, refreshRate, refreshRateTimeUnit);
+		this.timedRedresh = this.scheduledExecutor.scheduleAtFixedRate(refreshTask, 0, refreshRate, refreshRateTimeUnit);
 	}
 	
 	/**
@@ -146,7 +161,7 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	 */
 	public void close() throws IOException {
 		try {
-			this.refreshTimer.cancel();
+			this.timedRedresh.cancel(true);
 		} catch (Exception e) {
 			logger.error("Unable to cancel timer", e);
 		} finally {
@@ -168,24 +183,47 @@ public class EurekaServiceDiscoveryClient implements ServiceDiscoveryClient<Eure
 	 */
 	private final Runnable refreshTask = new Runnable() {
 		public void run() {
-			try {
-				restClient.get("/apps", ACCEPT_TYPE, Element.class).addListener(serviceResponseListener);
-			} catch (Exception e) {
-				logger.error("Unable to retrieve apps from EurekaService", e);
-			}
+			refreshApps(false);
 		}
 	};
 
 	/**
+	 * Refreshes the apps.
+	 * 
+	 * @param isRetry
+	 */
+	private void refreshApps(boolean isRetry) {
+		try {
+			restClient.get("/apps", ACCEPT_TYPE, Element.class).addListener(new RetryableHttpPromiseListener(false));
+		} catch (Exception e) {
+			logger.error("Unable to retrieve apps from EurekaService", e);
+		}
+	}
+
+	/**
 	 * Handles the discovery service response.
 	 */
-	private final HttpPromiseListener<HttpResponse<Element>> serviceResponseListener = new HttpPromiseListener<HttpResponse<Element>>() {
+	private class RetryableHttpPromiseListener implements HttpPromiseListener<HttpResponse<Element>> {
+		private final boolean isRetry;
+		
+		public RetryableHttpPromiseListener(boolean isRetry) {
+			this.isRetry = isRetry;
+		}
+
 		public void handle(HttpPromise<HttpResponse<Element>> promise) {
 			try {
 				applicationsRef.set(new EurekaApplications(promise.get().getBody().deserialize()));
 				lastRefreshTime = System.currentTimeMillis();
 			} catch (Exception e) {
-				logger.error("Unable to parse the EurekaService response", e);
+				if (isRetry) {
+					// log this and wait for next tick
+					logger.error("Unexpected exception while processing Eureka response during retry.", e);
+				} else {
+					// otherwise we retry
+					refreshApps(true);
+					
+					logger.warn("Unexpected exception while processing Eureka response, retrying...", e);
+				}
 			}
 		}
 	};
