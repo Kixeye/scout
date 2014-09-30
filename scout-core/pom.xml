@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.kixeye.scout</groupId>
 		<artifactId>scout-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<developers>

@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.kixeye.scout</groupId>
 		<artifactId>scout-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<developers>
@@ -35,7 +35,7 @@
 	</developers>
 
 	<properties>
-		<relax.version>1.0.0-SNAPSHOT</relax.version>
+		<relax.version>1.0.0</relax.version>
 		<jdom.version>2.0.5</jdom.version>
 	</properties>
 
