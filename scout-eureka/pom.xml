@@ -36,7 +36,7 @@
 
 	<properties>
 		<relax.version>1.0.0</relax.version>
-		<jdom.version>2.0.5</jdom.version>
+		<jdom.version>2.0.6.1</jdom.version>
 	</properties>
 
 	<dependencies>
